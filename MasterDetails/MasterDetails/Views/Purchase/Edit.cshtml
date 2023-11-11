@@ -1,0 +1,186 @@
+﻿@model MasterDetails.Models.Purchase
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Purchase</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="PurchaseDetails" asp-action="Edit" enctype="multipart/form-data">
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PurchaseDate" class="control-label"></label>
+                            <input asp-for="PurchaseDate" class="form-control form-control-sm" />
+                            <span asp-validation-for="PurchaseDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PurchaseCode" class="control-label"></label>
+                            <input asp-for="PurchaseCode" class="form-control form-control-sm" />
+                            <span asp-validation-for="PurchaseCode" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PurchaseType" class="control-label"></label>
+                            <input asp-for="PurchaseType" class="form-control form-control-sm" />
+                            <span asp-validation-for="PurchaseType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SupplierId" class="control-label"></label>
+                            <select asp-for="SupplierId" class="form-control form-control-sm" asp-items="@ViewBag.SupplierId">
+                                <option value="">Select Supplier</option>
+                            </select>
+                            <span asp-validation-for="SupplierId" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12">
+                        <table class="table mt-3" id="purchaseProducts">
+                            <thead>
+                                <tr>
+                                    <td style="width:170px">Product Name</td>
+                                    <td>Batch Number</td>
+                                    <td>Quantity</td>
+                                    <td>Purchase Price</td>
+                                    <td>Sell Price</td>
+                                    <td>Expiration Date</td>
+                                    <td>Amount</td>
+                                    <td style="width:50px">
+                                        <a class="btn btn-success btn-sm visible" onclick="AddItem(this)">
+                                            <i class="far fa-plus-square"> </i> Add
+                                        </a>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody id="CsDiv">
+                                @for (int i = 0; i < Model.PurchaseProducts.Count; i++)
+                                {
+                                    <tr>
+                                        <td style="width:170px">
+                                            <select class="form-control form-control-sm" asp-for="@Model.PurchaseProducts[i].ProductId" asp-items="@ViewBag.ProductId">
+                                                <option value="">Select Product</option>
+                                            </select>
+                                            <span asp-validation-for="@Model.PurchaseProducts[i].ProductId" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input asp-for="@Model.PurchaseProducts[i].BatchNumber" class="form-control form-control-sm">
+                                            <span asp-validation-for="@Model.PurchaseProducts[i].BatchNumber" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input type="number" asp-for="@Model.PurchaseProducts[i].Quantity" class="form-control form-control-sm Quantity">
+                                            <span asp-validation-for="@Model.PurchaseProducts[i].Quantity" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input type="number" asp-for="@Model.PurchaseProducts[i].PurchasePrice" class="form-control form-control-sm PurchasePrice">
+                                            <span asp-validation-for="@Model.PurchaseProducts[i].PurchasePrice" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input type="number" asp-for="@Model.PurchaseProducts[i].SellPrice" class="form-control form-control-sm SellPrice">
+                                            <span asp-validation-for="@Model.PurchaseProducts[i].SellPrice" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input asp-for="@Model.PurchaseProducts[i].ExpirationDate" class="form-control form-control-sm ExpirationDate">
+                                            <span asp-validation-for="@Model.PurchaseProducts[i].ExpirationDate" class="text-danger"></span>
+                                        </td>
+                                        <td>
+                                            <input type="number" asp-for="@Model.PurchaseProducts[i].Amount" class="form-control form-control-sm Amount">
+                                            <input type="hidden" asp-for="@Model.PurchaseProducts[i].IsDeleted" />
+                                        </td>
+                                        <td>
+                                            <a id="btnremove-@i" class="btn btn-danger btn-sm visible" onclick="DeleteItem(this)">
+                                                <i class="far fa-trash-alt"></i> Remove
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div class="row d-flex justify-content-end">
+                    <div class="row col-md-8">
+
+                        <div class="form-group row col-md-6">
+                            <label asp-for="DiscountPercent" class="col-sm-6 col-form-label col-form-label-sm">Discount Percent (%)</label>
+                            <div class="col-sm-6">
+                                <input type="number" asp-for="DiscountPercent" class="form-control form-control-sm DiscountPercent" />
+                                <span asp-validation-for="DiscountPercent" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row col-md-6">
+                            <label asp-for="DiscountAmount" class="col-sm-5 col-form-label col-form-label-sm"></label>
+                            <div class="col-sm-7">
+                                <input type="number" asp-for="DiscountAmount" class="form-control form-control-sm " />
+                                <span asp-validation-for="DiscountAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row col-md-6">
+                            <label asp-for="VatPercent" class="col-sm-6 col-form-label col-form-label-sm">Vat Percent (%)</label>
+                            <div class="col-sm-6">
+                                <input type="number" asp-for="VatPercent" class="form-control form-control-sm VatPercent" />
+                                <span asp-validation-for="VatPercent" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row col-md-6">
+                            <label asp-for="VatAmount" class="col-sm-5 col-form-label col-form-label-sm"></label>
+                            <div class="col-sm-7">
+                                <input type="number" asp-for="VatAmount" class="form-control form-control-sm " />
+                                <span asp-validation-for="VatAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row col-md-6">
+                            <label asp-for="TotalAmount" class="col-sm-5 col-form-label col-form-label-sm"></label>
+                            <div class="col-sm-7">
+                                <input type="number" asp-for="TotalAmount" class="form-control form-control-sm " />
+                                <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row col-md-6">
+
+                        </div>
+
+                        <div class="form-group row col-md-6">
+                            <label asp-for="PaymentAmount" class="col-sm-5 col-form-label col-form-label-sm"></label>
+                            <div class="col-sm-7">
+                                <input type="number" asp-for="PaymentAmount" class="form-control form-control-sm " />
+                                <span asp-validation-for="PaymentAmount" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div style="text-align:end">
+                    <a class="btn btn-outline-danger btn-sm" asp-action="Index">
+                        <i class="far fa-window-close"></i> Cancel
+                    </a>
+                    <button type="submit" value="Create" class="btn btn-outline-primary btn-sm" id="btnSubmit">
+                        <i class="far fa-save"></i> Save
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
